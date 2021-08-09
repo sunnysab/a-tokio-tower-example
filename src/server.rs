@@ -1,4 +1,5 @@
 use std::pin::Pin;
+use std::time::Duration;
 
 use async_bincode::AsyncBincodeStream;
 use serde::{Deserialize, Serialize};
@@ -8,6 +9,7 @@ use tokio_tower::multiplex::Server;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Frame {
+    delay: i32,
     content: String,
 }
 
@@ -18,7 +20,9 @@ type Response = Frame;
 // only pub because we use it to figure out the error type for ViewError
 pub struct Tagger(slab::Slab<()>);
 
-impl<Request: core::fmt::Debug, Response: core::fmt::Debug> multiplex::TagStore<Tagged<Request>, Tagged<Response>> for Tagger {
+impl<Request: core::fmt::Debug, Response: core::fmt::Debug>
+multiplex::TagStore<Tagged<Request>, Tagged<Response>> for Tagger
+{
     type Tag = u32;
 
     fn assign_tag(mut self: Pin<&mut Self>, r: &mut Tagged<Request>) -> Self::Tag {
@@ -33,7 +37,8 @@ impl<Request: core::fmt::Debug, Response: core::fmt::Debug> multiplex::TagStore<
 
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
 pub struct Tagged<T>
-    where T: core::fmt::Debug
+    where
+        T: core::fmt::Debug,
 {
     pub v: T,
     pub tag: u32,
@@ -50,13 +55,14 @@ async fn handler(req: Tagged<Frame>) -> Result<Tagged<Frame>, anyhow::Error> {
     println!("Received frame: {:?}, tag = {}", &req, tag);
 
     let mut response = Tagged::<Frame>::from(Frame {
+        delay: req.v.delay,
         content: format!("Hello, {}", req.v.content),
     });
 
+    tokio::time::sleep(Duration::from_secs(req.v.delay as u64)).await;
     response.tag = tag;
     Ok(response)
 }
-
 
 #[tokio::main]
 pub async fn main() {
@@ -71,7 +77,8 @@ pub async fn main() {
         let server = Server::new(
             AsyncBincodeStream::from(socket).for_async(),
             tower::service_fn(handler),
-        ).await;
+        )
+            .await;
 
         if let Err(e) = server {
             eprintln!("Server error: {:?}", e);

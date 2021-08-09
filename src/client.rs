@@ -10,6 +10,7 @@ use tower::{Service, ServiceExt};
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct Frame {
+    delay: i32,
     content: String,
 }
 
@@ -20,7 +21,9 @@ type Response = Frame;
 // only pub because we use it to figure out the error type for ViewError
 pub struct Tagger(slab::Slab<()>);
 
-impl<Request: core::fmt::Debug, Response: core::fmt::Debug> multiplex::TagStore<Tagged<Request>, Tagged<Response>> for Tagger {
+impl<Request: core::fmt::Debug, Response: core::fmt::Debug>
+multiplex::TagStore<Tagged<Request>, Tagged<Response>> for Tagger
+{
     type Tag = u32;
 
     fn assign_tag(mut self: Pin<&mut Self>, r: &mut Tagged<Request>) -> Self::Tag {
@@ -35,7 +38,8 @@ impl<Request: core::fmt::Debug, Response: core::fmt::Debug> multiplex::TagStore<
 
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
 pub struct Tagged<T>
-    where T: core::fmt::Debug
+    where
+        T: core::fmt::Debug,
 {
     pub v: T,
     pub tag: u32,
@@ -47,14 +51,9 @@ impl<T: core::fmt::Debug> From<T> for Tagged<T> {
     }
 }
 
-// #[derive(Debug, thiserror::Error)]
-// #[error("Error occurred.")]
-// struct MyError;
-
 fn on_service_error(e: anyhow::Error) {
     eprintln!("error handling: {:?}", e);
 }
-
 
 pub async fn ready<S: Service<RequestFrame>, RequestFrame>(svc: &mut S) -> Result<(), S::Error> {
     use futures_util::future::poll_fn;
@@ -73,17 +72,24 @@ pub async fn main() {
     let t = multiplex::MultiplexTransport::new(stream, Tagger::default());
 
     let mut client = Client::with_error_handler(t, on_service_error);
-    // ready(&mut client).await.unwrap();
 
-    for _ in 0..10 {
+    let delay_array = vec![5, 4, 1, 2, 1];
+
+    for i in 0..5 {
         let ready_client = client.ready().await.unwrap();
 
-        let response: Tagged<Frame> = ready_client.call(Tagged::<Frame>::from(Frame {
-            content: "Bob !".to_string()
-        })).await.unwrap();
+        let fut1 = ready_client.call(Tagged::<Frame>::from(Frame {
+            content: "Bob !".to_string(),
+            delay: delay_array[i],
+        }));
 
-        println!("response = {:?}", response);
+        tokio::task::spawn(async {
+            let response: Tagged<Frame> = fut1.await.unwrap();
+            println!("response = {:?}", response);
+        });
     }
 
-    tokio::time::sleep(Duration::from_millis(1000)).await;
+    loop {
+        tokio::time::sleep(Duration::from_secs(1000)).await;
+    }
 }

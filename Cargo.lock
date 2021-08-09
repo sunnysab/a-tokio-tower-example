@@ -20,13 +20,13 @@ version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2a31c08aa335b3ab414d29bdefe1f4353408abf93f3db1e3e2cc78d3ec4f0d43"
 dependencies = [
-    "bincode",
-    "byteorder",
-    "bytes",
-    "futures-core",
-    "futures-sink",
-    "serde",
-    "tokio",
+ "bincode",
+ "byteorder",
+ "bytes",
+ "futures-core",
+ "futures-sink",
+ "serde",
+ "tokio",
 ]
 
 [[package]]
@@ -611,17 +611,17 @@ dependencies = [
 name = "rpc"
 version = "0.1.0"
 dependencies = [
-    "anyhow",
-    "async-bincode",
-    "bincode",
-    "futures",
-    "futures-util",
-    "serde",
-    "slab",
-    "thiserror",
-    "tokio",
-    "tokio-tower",
-    "tower",
+ "anyhow",
+ "async-bincode",
+ "bincode",
+ "futures",
+ "futures-util",
+ "serde",
+ "slab",
+ "thiserror",
+ "tokio",
+ "tokio-tower",
+ "tower",
 ]
 
 [[package]]
@@ -677,9 +677,9 @@ version = "1.0.74"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1873d832550d4588c3dbc20f01361ab00bfe741048f71e3fecf145a7cc18b29c"
 dependencies = [
-    "proc-macro2",
-    "quote",
-    "unicode-xid",
+ "proc-macro2",
+ "quote",
+ "unicode-xid",
 ]
 
 [[package]]
@@ -688,7 +688,7 @@ version = "1.0.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "93119e4feac1cbe6c798c34d3a53ea0026b0b1de6a120deef895137c0529bfe2"
 dependencies = [
-    "thiserror-impl",
+ "thiserror-impl",
 ]
 
 [[package]]
@@ -697,9 +697,9 @@ version = "1.0.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "060d69a0afe7796bf42e9e2ff91f5ee691fb15c53d38b4b62a9a53eb23164745"
 dependencies = [
-    "proc-macro2",
-    "quote",
-    "syn",
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
@@ -708,9 +708,9 @@ version = "1.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4b7b349f11a7047e6d1276853e612d152f5e8a352c61917887cc2169e2366b4c"
 dependencies = [
-    "autocfg",
-    "bytes",
-    "libc",
+ "autocfg",
+ "bytes",
+ "libc",
  "memchr",
  "mio",
  "num_cpus",
