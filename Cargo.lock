@@ -9,6 +9,27 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f26201604c87b1e01bd3d98f8d5d9a8fcbb815e8cedb41ffccbeb4bf593a35fe"
 
 [[package]]
+name = "anyhow"
+version = "1.0.42"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "595d3cfa7a60d4555cb5067b99f07142a08ea778de5cf993f7b75c7d8fabc486"
+
+[[package]]
+name = "async-bincode"
+version = "0.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2a31c08aa335b3ab414d29bdefe1f4353408abf93f3db1e3e2cc78d3ec4f0d43"
+dependencies = [
+    "bincode",
+    "byteorder",
+    "bytes",
+    "futures-core",
+    "futures-sink",
+    "serde",
+    "tokio",
+]
+
+[[package]]
 name = "autocfg"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -156,31 +177,6 @@ checksum = "d82cfc11ce7f2c3faef78d8a684447b40d503d9681acebed6cb728d45940c4db"
 dependencies = [
  "cfg-if 1.0.0",
  "lazy_static",
-]
-
-[[package]]
-name = "educe"
-version = "0.4.18"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f86b50932a01e7ec5c06160492ab660fb19b6bb2a7878030dd6cd68d21df9d4d"
-dependencies = [
- "enum-ordinalize",
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
-name = "enum-ordinalize"
-version = "3.1.10"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0b166c9e378360dd5a6666a9604bb4f54ae0cac39023ffbac425e917a2a04fef"
-dependencies = [
- "num-bigint",
- "num-traits",
- "proc-macro2",
- "quote",
- "syn",
 ]
 
 [[package]]
@@ -445,27 +441,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "num-bigint"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4e0d047c1062aa51e256408c560894e5251f08925980e53cf1aa5bd00eec6512"
-dependencies = [
- "autocfg",
- "num-integer",
- "num-traits",
-]
-
-[[package]]
-name = "num-integer"
-version = "0.1.44"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d2cc698a63b549a70bc047073d2949cce27cd1c7b0a4a862d08a8031bc2801db"
-dependencies = [
- "autocfg",
- "num-traits",
-]
-
-[[package]]
 name = "num-traits"
 version = "0.2.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -636,14 +611,17 @@ dependencies = [
 name = "rpc"
 version = "0.1.0"
 dependencies = [
- "bincode",
- "futures",
- "serde",
- "tokio",
- "tokio-serde",
- "tokio-tower",
- "tokio-util",
- "tower",
+    "anyhow",
+    "async-bincode",
+    "bincode",
+    "futures",
+    "futures-util",
+    "serde",
+    "slab",
+    "thiserror",
+    "tokio",
+    "tokio-tower",
+    "tower",
 ]
 
 [[package]]
@@ -699,9 +677,29 @@ version = "1.0.74"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1873d832550d4588c3dbc20f01361ab00bfe741048f71e3fecf145a7cc18b29c"
 dependencies = [
- "proc-macro2",
- "quote",
- "unicode-xid",
+    "proc-macro2",
+    "quote",
+    "unicode-xid",
+]
+
+[[package]]
+name = "thiserror"
+version = "1.0.26"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "93119e4feac1cbe6c798c34d3a53ea0026b0b1de6a120deef895137c0529bfe2"
+dependencies = [
+    "thiserror-impl",
+]
+
+[[package]]
+name = "thiserror-impl"
+version = "1.0.26"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "060d69a0afe7796bf42e9e2ff91f5ee691fb15c53d38b4b62a9a53eb23164745"
+dependencies = [
+    "proc-macro2",
+    "quote",
+    "syn",
 ]
 
 [[package]]
@@ -710,9 +708,9 @@ version = "1.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4b7b349f11a7047e6d1276853e612d152f5e8a352c61917887cc2169e2366b4c"
 dependencies = [
- "autocfg",
- "bytes",
- "libc",
+    "autocfg",
+    "bytes",
+    "libc",
  "memchr",
  "mio",
  "num_cpus",
@@ -733,21 +731,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
-]
-
-[[package]]
-name = "tokio-serde"
-version = "0.8.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "911a61637386b789af998ee23f50aa30d5fd7edcec8d6d3dedae5e5815205466"
-dependencies = [
- "bincode",
- "bytes",
- "educe",
- "futures-core",
- "futures-sink",
- "pin-project",
- "serde",
 ]
 
 [[package]]
